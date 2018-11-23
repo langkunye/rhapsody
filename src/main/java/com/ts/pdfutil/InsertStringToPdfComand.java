@@ -1,4 +1,4 @@
-package com.ts.pdfutil;
+package main.java.com.ts.pdfutil;
 
 import java.io.File;
 import java.io.IOException;

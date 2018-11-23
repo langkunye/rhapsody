@@ -15,7 +15,7 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 public class InsertStringToPdfComand {
 
 	public static void main(String[] args) {
-		String csvFilePath = "/Users/langkunye/git/rhapsody/csv/test1.csv";
+		String csvFilePath = "/Users/langkunye/git/rhapsody/resources/csv/test1.csv";
 
 //		// para check
 //		if (args.length == 1) {

@@ -1,4 +1,4 @@
-package main.java.com.ts.pdfutil;
+package main.com.ts.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,15 +12,33 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
-public class InsertStringToPdfComand {
+import main.com.ts.common.CSVParser;
+import main.com.ts.dto.CompanyDto;
+
+/**
+ * 年末調整コントローラー
+ *
+ */
+public class YearEndAdjustmentController {
 
 	public static void main(String[] args) {
-		String csvFilePath = "/Users/langkunye/git/rhapsody/resources/csv/test1.csv";
+		YearEndAdjustmentController action = new YearEndAdjustmentController();
+		// 引数をチェックする
+		if (action.checkArgs(args) == false) {
+			return;
+		}
 
+		String csvFilePath = "/Users/langkunye/git/rhapsody/resources/csv/test1.csv";
+		CompanyDto company = new CompanyDto();
+
+		company.setPostNumber("1234567");
+		System.out.println(company.getPostNumber());
+		// System.out.println(company.getPostNumber());
+		// company.
 //		// para check
 //		if (args.length == 1) {
 //			csvFilePath = args[0];
-//			System.out.println("csvFilePath=" + csvFilePath);
+//			System.out.println("csvFilePath=" + ch);
 //		} else {
 //			// para error
 //			System.out.println("incorrect number of parameter:" + args.length);
@@ -100,7 +118,7 @@ public class InsertStringToPdfComand {
 				PDPageContentStream pdfSteam = new PDPageContentStream(doc, page, PDPageContentStream.AppendMode.APPEND,
 						false);
 				// strInfoListCompany
-				InsertStringToPdfComand.printLine(doc, pdfSteam, strInfoListCompany, font);
+				YearEndAdjustmentController.printLine(doc, pdfSteam, strInfoListCompany, font);
 				pdfSteam.close();
 				doc.setAllSecurityToBeRemoved(true);
 				// TODO put key into file name
@@ -142,5 +160,17 @@ public class InsertStringToPdfComand {
 		float x;
 		float y;
 		float fontSize;
+	}
+
+	/**
+	 * 入力した引数を確認
+	 * 
+	 * @return boolean
+	 */
+	private boolean checkArgs(String[] args) {
+		if (args.length == 1) {
+			return true;
+		}
+		return false;
 	}
 }

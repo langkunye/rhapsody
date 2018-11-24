@@ -1,4 +1,4 @@
-package main.java.com.ts.pdfutil;
+package main.com.ts.common;
 
 import java.io.File;
 import java.io.FileReader;

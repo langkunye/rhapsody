@@ -2,6 +2,11 @@ package main.com.ts.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +17,12 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
+
 import main.com.ts.common.CSVParser;
+import main.com.ts.common.YearEndAdjustmentType;
+
 import main.com.ts.dto.CompanyDto;
 
 /**
@@ -28,6 +38,7 @@ public class YearEndAdjustmentController {
 			return;
 		}
 
+		// 入力内容により、出力内容を実装
 		String csvFilePath = "/Users/langkunye/git/rhapsody/resources/csv/test1.csv";
 		CompanyDto company = new CompanyDto();
 
@@ -168,9 +179,12 @@ public class YearEndAdjustmentController {
 	 * @return boolean
 	 */
 	private boolean checkArgs(String[] args) {
-		if (args.length == 1) {
+		if (args.length == 2) {
 			return true;
 		}
+		// フォーマットチェック YYYYMMDD
+		//
 		return false;
 	}
+
 }

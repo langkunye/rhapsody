@@ -24,6 +24,7 @@ import main.com.ts.common.CSVParser;
 import main.com.ts.common.YearEndAdjustmentType;
 
 import main.com.ts.dto.CompanyDto;
+import main.com.ts.service.YearEndAdjustmentService;
 
 /**
  * 年末調整コントローラー
@@ -37,12 +38,19 @@ public class YearEndAdjustmentController {
 		if (action.checkArgs(args) == false) {
 			return;
 		}
-
+		YearEndAdjustmentService service = new YearEndAdjustmentService();
+		try {
+			service.writeCompanyInfo();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// 入力内容により、出力内容を実装
-		String csvFilePath = "/Users/langkunye/git/rhapsody/resources/csv/test1.csv";
+		String csvFilePath = "";
 		CompanyDto company = new CompanyDto();
-
-		company.setPostNumber("1234567");
 		System.out.println(company.getPostNumber());
 		// System.out.println(company.getPostNumber());
 		// company.

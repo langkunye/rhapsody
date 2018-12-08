@@ -5,12 +5,15 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 
 import java.util.regex.Pattern;
-import java.util.ArrayList;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import java.util.ArrayList;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class CSVParser {
+public class PDFParser {
 
 	public static String[][] parse(String filename) {
 		String[][] ret = null;
@@ -49,5 +52,9 @@ public class CSVParser {
 		}
 
 		return ret;
+	}
+
+	public static <T> void writePDF(PDDocument doc, PDPageContentStream stream, Class<T> clazz, PDFont font) {
+		System.out.println(clazz);
 	}
 }

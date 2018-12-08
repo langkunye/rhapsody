@@ -19,23 +19,26 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 public class YearEndAdjustmentService {
 	// 会社情報の設定
 	public void writeCompanyInfo() throws IOException, URISyntaxException {
 		// 会社CSVのパスを指定する
-		URL url = Resources.getResource(Constant.COMPANY_PATH);
-		File file = new File(url.toURI());
+		URL comUrl = Resources.getResource(Constant.COMPANY_PATH);
+		File comFile = new File(comUrl.toURI());
+
+		URL fontUrl = Resources.getResource(Constant.XANO_MINCHO_U32);
+		File fontFile = new File(fontUrl.toURI());
 		CompanyDto companyInfo = null;
-		companyInfo = comCsvToBean(file);
+		companyInfo = comCsvToBean(comFile);
 		if (companyInfo == null) {
 			return;
 		}
-//		if (CollectionUtils.isEmpty(lines)) {
-//			return;
-//		}
+		URL pdfUrl = Resources.getResource(Constant.READ_PDF_BASE_PATH + "2018/h30_給与所得者の保険料控除申告書.pdf");
+		File pdfFile = new File(pdfUrl.toURI());
 
+		setCompanyInfo(companyInfo, pdfFile, fontFile);
 	}
 
 	/**
@@ -67,18 +70,28 @@ public class YearEndAdjustmentService {
 		}
 	}
 
-	private void setCompanyInfo(CompanyDto companyInfo, File file) {
+	private void setCompanyInfo(CompanyDto companyInfo, File pdfFile, File fontFile) {
 		try {
-			PDDocument doc = PDDocument.load(file);
-			PDFont font = PDType1Font.HELVETICA_BOLD;
+			PDDocument doc = PDDocument.load(pdfFile);
+			PDFont font = PDType0Font.load(doc, fontFile);
 			PDPage page = doc.getPage(0);
-			PDPageContentStream pdfSteam = new PDPageContentStream(doc, page, PDPageContentStream.AppendMode.APPEND,
-					false);
+			PDPageContentStream contentStream = new PDPageContentStream(doc, page,
+					PDPageContentStream.AppendMode.APPEND, false);
+			// 内容を書き込み
+			contentStream.beginText();
+			// TODO 会社名称の長さにより、字体を調整するように
+			contentStream.setFont(font, 10);
+			contentStream.newLineAtOffset(170, 525);
+			contentStream.showText(companyInfo.getName());
+
+			contentStream.endText();
+			contentStream.close();
+			// TODO put key into file name
+			doc.save("/Users/langkunye/git/rhapsody/pdf/h30_給与所得者の保険料控除申告書.pdf");
+			doc.close();
 		} catch (InvalidPasswordException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

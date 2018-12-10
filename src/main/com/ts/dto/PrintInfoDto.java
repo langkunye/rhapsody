@@ -8,12 +8,12 @@ import lombok.Data;
  */
 @Data
 public class PrintInfoDto {
-	// 内容
-	private String content;
-	// X軸
-	private float x;
-	// Y軸
-	private float y;
-	// 文字サイズ
-	private float fontSize;
+  // 内容
+  private String content;
+  // X軸
+  private float x;
+  // Y軸
+  private float y;
+  // 文字サイズ
+  private float fontSize;
 }

@@ -1,5 +1,7 @@
 package main.com.ts.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Data;
 
 /**
@@ -16,4 +18,6 @@ public class CompanyDto {
   private String postNumber;
   // 給与の支払者の所在地（住所）
   private String address;
+  // 社員リスト
+  private List<EmployeeDto> employeeList = new ArrayList<EmployeeDto>();
 }

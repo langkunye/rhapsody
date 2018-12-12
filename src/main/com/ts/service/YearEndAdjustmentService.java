@@ -14,6 +14,7 @@ import main.com.ts.common.Constant;
 import main.com.ts.common.FileUtils;
 import main.com.ts.common.YearEndAdjustmentType;
 import main.com.ts.dto.CompanyDto;
+import main.com.ts.dto.EmployeeDto;
 import main.com.ts.dto.PrintInfoDto;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.csv.CSVFormat;
@@ -26,6 +27,8 @@ public class YearEndAdjustmentService {
       throws IOException, URISyntaxException {
     // 会社ファイル(.csv)
     File comFile = FileUtils.getFileByClasspath(Constant.COMPANY_PATH);
+    // 社員CSV(.csv)
+    File employeeFile = FileUtils.getFileByClasspath(Constant.EMPLOYEE_PATH);
     // 字体ファイル(.ttf)
     File fontFile = FileUtils.getFileByClasspath(Constant.MSPRGOT);
     // PDFファイル(.pdf)
@@ -33,6 +36,7 @@ public class YearEndAdjustmentService {
     File pdfFile = FileUtils.getFileByClasspath(Constant.READ_PDF_BASE_PATH + year + FileUtils.SLASH
         + YearEndAdjustmentType.insurance.getString() + FileUtils.PDF);
     List<CompanyDto> companyInfoList = comCsvToBean(comFile);
+    List<EmployeeDto> employeeInfoList = employeeCsvToBean(employeeFile);
     // 会社情報が空の場合、戻す
     if (CollectionUtils.isEmpty(companyInfoList)) {
       return;
@@ -70,6 +74,25 @@ public class YearEndAdjustmentService {
         break;
       }
       return companyList;
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private List<EmployeeDto> employeeCsvToBean(File file) {
+    try {
+      BufferedReader br =
+          new BufferedReader(new InputStreamReader(new FileInputStream(file), Charsets.UTF_8));
+      CSVFormat csvFormat =
+          CSVFormat.DEFAULT.withHeader(Constant.EMPLOYEE_HEADER).withSkipHeaderRecord();
+      CSVParser parse = new CSVParser(br, csvFormat);
+      EmployeeDto employee = new EmployeeDto();
+      List<EmployeeDto> employeeList = new ArrayList<EmployeeDto>();
+      for (CSVRecord line : parse) {
+        employee.setName(line.get(Constant.EMPLOYEE_HEADER[0]));
+        employeeList.add(employee);
+      }
+      return employeeList;
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

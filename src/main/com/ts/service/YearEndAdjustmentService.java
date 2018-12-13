@@ -41,7 +41,9 @@ public class YearEndAdjustmentService {
     if (CollectionUtils.isEmpty(companyInfoList)) {
       return;
     }
-    List<PrintInfoDto> printInfoList = setPrintInfoList(companyInfoList);
+    // 社員を設定する
+    companyInfoList.get(0).setEmployeeList(employeeInfoList);
+    List<PrintInfoDto> printInfoList = setPrintInfoList(companyInfoList.get(0));
     FileUtils.printListToPDF(printInfoList, pdfFile, fontFile, outputPath);
     // setCompanyInfo(companyInfo, pdfFile, fontFile);
   }
@@ -89,7 +91,24 @@ public class YearEndAdjustmentService {
       EmployeeDto employee = new EmployeeDto();
       List<EmployeeDto> employeeList = new ArrayList<EmployeeDto>();
       for (CSVRecord line : parse) {
+        // 氏名
         employee.setName(line.get(Constant.EMPLOYEE_HEADER[0]));
+        // フリガナ
+        employee.setFurigana(line.get(Constant.EMPLOYEE_HEADER[1]));
+        // TODO 日本年に変換処理を追加
+        employee.setBirthday(line.get(Constant.EMPLOYEE_HEADER[2]));
+        // 個人番号
+        employee.setMyNum(line.get(Constant.EMPLOYEE_HEADER[3]));
+        // 郵便番号
+        employee.setPostNum(line.get(Constant.EMPLOYEE_HEADER[4]));
+        // 住所
+        employee.setAddress(line.get(Constant.EMPLOYEE_HEADER[5]));
+        // 世代主の氏名
+        employee.setHeadFamilyName(line.get(Constant.EMPLOYEE_HEADER[6]));
+        // 世代主との続柄
+        employee.setHeadFamilyRelationship(line.get(Constant.EMPLOYEE_HEADER[7]));
+        // 配偶者の有無(有・無)"
+        employee.setHasSpouse(false);
         employeeList.add(employee);
       }
       return employeeList;
@@ -104,9 +123,10 @@ public class YearEndAdjustmentService {
    * @param companyList 会社情報リスト
    * @return 会社出力情報リスト
    */
-  private List<PrintInfoDto> setPrintInfoList(List<CompanyDto> companyList) {
+  private List<PrintInfoDto> setPrintInfoList(CompanyDto company) {
     List<PrintInfoDto> printInfoList = new ArrayList<PrintInfoDto>();
-    companyList.forEach(company -> {
+    // 社員ごとで出力
+    company.getEmployeeList().forEach(employee -> {
       // 会社名を設定する
       printInfoList.add(setCompanyName(company));
       // 会社番号を設定する
@@ -115,9 +135,21 @@ public class YearEndAdjustmentService {
       printInfoList.add(setCompanyPostNum(company));
       // 会社の住所を設定する
       printInfoList.add(setCompanyAddr(company));
+      // printInfoList.add(setEmployeeName(employee));
     });
 
     return printInfoList;
+  }
+
+  private PrintInfoDto setEmployeeName(EmployeeDto emplyoee) {
+    PrintInfoDto printInfoDto = new PrintInfoDto();
+    // TODO 会社名称の長さにより、字体を調整するように
+    printInfoDto.setContent(emplyoee.getName());
+    printInfoDto.setFontSize(20);
+    printInfoDto.setX(300);
+    printInfoDto.setY(200);
+
+    return printInfoDto;
   }
 
   /**
@@ -133,6 +165,7 @@ public class YearEndAdjustmentService {
     printInfoDto.setFontSize(10);
     printInfoDto.setX(175);
     printInfoDto.setY(525);
+
     return printInfoDto;
   }
 
@@ -184,6 +217,12 @@ public class YearEndAdjustmentService {
     return printInfoDto;
   }
 
+  /**
+   * 会社住所の印刷情報を設定する
+   * 
+   * @param company
+   * @return
+   */
   private PrintInfoDto setCompanyAddr(CompanyDto company) {
     PrintInfoDto printInfoDto = new PrintInfoDto();
     printInfoDto.setContent(company.getAddress());
